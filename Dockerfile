@@ -27,17 +27,25 @@ ARG BUILD_HASH
 WORKDIR /app
 
 # to store git revision in build
-RUN apk add --no-cache git
+# RUN apk add --no-cache git
 
-COPY package.json package-lock.json ./
-RUN npm ci
+# COPY package.json package-lock.json ./
 
-COPY . .
+# 配置npm使用淘宝镜像加速下载 (可选)
+RUN npm config set registry https://registry.npmmirror.com
+
+# RUN npm ci  --omit=dev  --foreground-scripts --maxsockets=10 --fetch-retries=3
+
+COPY build .
+COPY CHANGELOG.md .
+COPY package.json .
+RUN ls -la /app
+
 ENV APP_BUILD_HASH=${BUILD_HASH}
-RUN npm run build
+# RUN npm run build
 
 ######## WebUI backend ########
-FROM python:3.11-slim-bookworm AS base
+FROM python:3.12.8-slim-bookworm AS base
 
 # Use args
 ARG USE_CUDA
@@ -108,6 +116,12 @@ RUN echo -n 00000000-0000-0000-0000-000000000000 > $HOME/.cache/chroma/telemetry
 # Make sure the user has access to the app and root directory
 RUN chown -R $UID:$GID /app $HOME
 
+# RUN sed -i 's/deb.debian.org/mirrors.aliyun.com/g' /etc/apt/sources.list \
+#     && sed -i 's/security.debian.org/mirrors.aliyun.com\/debian-security/g' /etc/apt/sources.list
+RUN echo "deb http://mirrors.aliyun.com/debian/ bookworm main non-free contrib" > /etc/apt/sources.list && \
+    echo "deb http://mirrors.aliyun.com/debian/ bookworm-updates main non-free contrib" >> /etc/apt/sources.list && \
+    echo "deb http://mirrors.aliyun.com/debian-security bookworm-security main" >> /etc/apt/sources.list
+
 RUN if [ "$USE_OLLAMA" = "true" ]; then \
     apt-get update && \
     # Install pandoc and netcat
@@ -135,17 +149,17 @@ RUN if [ "$USE_OLLAMA" = "true" ]; then \
 # install python dependencies
 COPY --chown=$UID:$GID ./backend/requirements.txt ./requirements.txt
 
-RUN pip3 install --no-cache-dir uv && \
+RUN pip3 install --no-cache-dir uv -i https://mirrors.aliyun.com/pypi/simple/  && \
     if [ "$USE_CUDA" = "true" ]; then \
     # If you use CUDA the whisper and embedding model will be downloaded on first use
     pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/$USE_CUDA_DOCKER_VER --no-cache-dir && \
-    uv pip install --system -r requirements.txt --no-cache-dir && \
+    uv pip install --system -r requirements.txt --no-cache-dir -i https://mirrors.aliyun.com/pypi/simple/ && \
     python -c "import os; from sentence_transformers import SentenceTransformer; SentenceTransformer(os.environ['RAG_EMBEDDING_MODEL'], device='cpu')" && \
     python -c "import os; from faster_whisper import WhisperModel; WhisperModel(os.environ['WHISPER_MODEL'], device='cpu', compute_type='int8', download_root=os.environ['WHISPER_MODEL_DIR'])"; \
     python -c "import os; import tiktoken; tiktoken.get_encoding(os.environ['TIKTOKEN_ENCODING_NAME'])"; \
     else \
     pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu --no-cache-dir && \
-    uv pip install --system -r requirements.txt --no-cache-dir && \
+    uv pip install --system -r requirements.txt --no-cache-dir -i https://mirrors.aliyun.com/pypi/simple/  && \
     python -c "import os; from sentence_transformers import SentenceTransformer; SentenceTransformer(os.environ['RAG_EMBEDDING_MODEL'], device='cpu')" && \
     python -c "import os; from faster_whisper import WhisperModel; WhisperModel(os.environ['WHISPER_MODEL'], device='cpu', compute_type='int8', download_root=os.environ['WHISPER_MODEL_DIR'])"; \
     python -c "import os; import tiktoken; tiktoken.get_encoding(os.environ['TIKTOKEN_ENCODING_NAME'])"; \
@@ -159,9 +173,13 @@ RUN pip3 install --no-cache-dir uv && \
 # COPY --from=build /app/onnx /root/.cache/chroma/onnx_models/all-MiniLM-L6-v2/onnx
 
 # copy built frontend files
-COPY --chown=$UID:$GID --from=build /app/build /app/build
-COPY --chown=$UID:$GID --from=build /app/CHANGELOG.md /app/CHANGELOG.md
-COPY --chown=$UID:$GID --from=build /app/package.json /app/package.json
+# COPY --chown=$UID:$GID --from=build /app/build /app/build
+# COPY --chown=$UID:$GID --from=build /app/CHANGELOG.md /app/CHANGELOG.md
+# COPY --chown=$UID:$GID --from=build /app/package.json /app/package.json
+
+COPY --chown=$UID:$GID  build /app/build
+COPY --chown=$UID:$GID  CHANGELOG.md /app/CHANGELOG.md
+COPY --chown=$UID:$GID  package.json /app/package.json
 
 # copy backend files
 COPY --chown=$UID:$GID ./backend .
