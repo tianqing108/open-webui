@@ -26,6 +26,7 @@ services:
       - 'WEBUI_SECRET_KEY='
     extra_hosts:
       - host.docker.internal:host-gateway
+      - local.cgws.com:10.100.109.38
     restart: unless-stopped
 
 volumes:
