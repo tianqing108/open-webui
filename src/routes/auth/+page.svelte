@@ -27,6 +27,34 @@
 	let password = '';
 
 	let ldapUsername = '';
+	// 长城长修改：获取url参数
+	const getEmailValue = () => {
+		// 1. 解析原始 URL 中的 redirect 参数
+		const params = new URLSearchParams(window.location.search.split('?')[1]);
+		const encodedRedirect = params.get('redirect');
+		if (!encodedRedirect) return null;
+
+		// 2. 解码 redirect 并解析目标 URL
+		const decodedRedirect = decodeURIComponent(encodedRedirect);
+		try {
+			// 补全协议以创建合法 URL（避免浏览器同源策略限制）
+			const target = new URL(`http://dummy${decodedRedirect}`);
+			const urlEmail = target.searchParams.get('email');
+			const urlPassword = target.searchParams.get('password');
+			if (urlEmail) {
+				// localStorage.urlEmail = urlEmail;
+				// localStorage.urlPassword = urlPassword;
+			}
+			const data = {
+				urlEmail,
+				urlPassword
+			}
+			return data;
+		} catch (error) {
+			console.error('URL 解析失败:', error);
+			return null;
+		}
+	}
 
 	const querystringValue = (key) => {
 		const querystring = window.location.search;
@@ -37,7 +65,8 @@
 	const setSessionUser = async (sessionUser) => {
 		if (sessionUser) {
 			console.log(sessionUser);
-			toast.success($i18n.t(`You're now logged in.`));
+			// 长城长修改
+			// toast.success($i18n.t(`You're now logged in.`));
 			if (sessionUser.token) {
 				localStorage.token = sessionUser.token;
 			}
@@ -49,9 +78,9 @@
 			goto(redirectPath);
 		}
 	};
-
-	const signInHandler = async () => {
-		const sessionUser = await userSignIn(email, password).catch((error) => {
+	// 长城长修改：自动登录
+	const signInHandler = async (e, p) => {
+		const sessionUser = await userSignIn(e || email, p || password).catch((error) => {
 			toast.error(`${error}`);
 			return null;
 		});
@@ -143,10 +172,14 @@
 			goto(redirectPath);
 		}
 		await checkOauthCallback();
-
+		// 长城长修改：自动登录
+		const {urlEmail, urlPassword} = getEmailValue();
+		if (urlEmail && urlPassword) {
+			signInHandler(urlEmail, urlPassword)
+			return
+		}
 		loaded = true;
 		setLogoImage();
-
 		if (($config?.features.auth_trusted_header ?? false) || $config?.features.auth === false) {
 			await signInHandler();
 		} else {
