@@ -545,7 +545,7 @@
 			</div>
 		{/if} -->
 
-		<!-- 长城长修改：隐藏左侧边栏，搜索、笔记、工作空间 -->
+		<!-- 长城修改：隐藏左侧边栏，搜索、笔记、工作空间 -->
 		{#if $user?.role === 'admin'}
 			<div class="px-1.5 flex justify-center text-gray-800 dark:text-gray-200">
 				<button
@@ -914,7 +914,7 @@
 			</Folder>
 		</div>
 		
-		<!-- 长城长修改：隐藏左侧底部用户按钮 -->
+		<!-- 长城修改：隐藏左侧底部用户按钮 -->
 		{#if $user?.role === 'admin'}
 			<div class="px-2">
 				<div class="flex flex-col font-primary">

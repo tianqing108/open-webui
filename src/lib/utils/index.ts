@@ -1382,3 +1382,28 @@ export const slugify = (str: string): string => {
 			.toLowerCase()
 	);
 };
+
+// 长城修改：获取url参数
+export const getUrlParam = () => {
+
+	const urlObj = new URL(window.location.href);
+	// 获取 URL 中的所有参数
+	const params = new URLSearchParams(urlObj.search);
+	const paramsObject = {};
+	console.log(urlObj.search)
+	// 遍历所有参数并将它们添加到对象中
+	for (const [key, value] of params.entries()) {
+		paramsObject[key] = value;
+	}
+	// 如果存在 redirect 参数，尝试解析其中的嵌套参数
+	if (paramsObject['redirect']) {
+		const redirectUrl = new URL(paramsObject['redirect'], window.location.origin);
+		const nestedParams = new URLSearchParams(redirectUrl.search);
+
+		for (const [key, value] of nestedParams.entries()) {
+			paramsObject[key] = value;
+		}
+	}
+	console.log(paramsObject);
+	return paramsObject;
+}

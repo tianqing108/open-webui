@@ -1153,7 +1153,7 @@
 
 								<div class=" flex justify-between mt-0.5 mb-2.5 mx-0.5 max-w-full" dir="ltr">
 										<div class="ml-1 self-end flex items-center flex-1 max-w-[80%]">
-											<!-- 长城长修改：隐藏输入框+号、代码解释器 -->
+											<!-- 长城修改：隐藏输入框+号、代码解释器 -->
 											{#if $_user?.role === 'admin'}
 												<InputMenu
 													bind:selectedToolIds
@@ -1356,7 +1356,7 @@
 										</div>
 
 									<div class="self-end flex space-x-1 mr-1 shrink-0">
-										<!-- 长城长修改：隐藏输入框中语音听写功能 -->
+										<!-- 长城修改：隐藏输入框中语音听写功能 -->
 										{#if $_user?.role === 'admin'}
 											{#if (!history?.currentId || history.messages[history.currentId]?.done == true) && ($_user?.role === 'admin' || ($_user?.permissions?.chat?.stt ?? true))}
 												<!-- {$i18n.t('Record voice')} -->
@@ -1408,7 +1408,7 @@
 												</Tooltip>
 											{/if}
 										{/if}
-										<!-- 长城长修改：隐藏输入框中语音模式 -->
+										<!-- 长城修改：隐藏输入框中语音模式 -->
 										{#if $_user?.role === 'admin'}
 											{#if (taskIds && taskIds.length > 0) || (history.currentId && history.messages[history.currentId]?.done != true)}
 												<div class=" flex items-center">

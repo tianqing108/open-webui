@@ -53,7 +53,7 @@
 					</div>
 				{/if}
 			</div>
-			<!-- 长城长修改：隐藏右上角按钮 -->
+			<!-- 长城修改：隐藏右上角按钮 -->
 			{#if $user?.role === 'admin'}
 				<div class="self-start flex flex-none items-center text-gray-600 dark:text-gray-400">
 					{#if $user !== undefined}
