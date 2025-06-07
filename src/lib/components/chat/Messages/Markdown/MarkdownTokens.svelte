@@ -20,7 +20,7 @@
 	import ArrowDownTray from '$lib/components/icons/ArrowDownTray.svelte';
 
 	import Source from './Source.svelte';
-	import { settings } from '$lib/stores';
+	import { settings, user } from '$lib/stores';
 	import HtmlToken from './HTMLToken.svelte';
 
 	export let id: string;
@@ -253,23 +253,29 @@
 			</ul>
 		{/if}
 	{:else if token.type === 'details'}
-		<Collapsible
-			title={token.summary}
-			open={$settings?.expandDetails ?? false}
-			attributes={token?.attributes}
-			className="w-full space-y-1"
-			dir="auto"
-		>
-			<div class=" mb-1.5" slot="content">
-				<svelte:self
-					id={`${id}-${tokenIdx}-d`}
-					tokens={marked.lexer(token.text)}
-					attributes={token?.attributes}
-					{onTaskClick}
-					{onSourceClick}
-				/>
-			</div>
-		</Collapsible>
+		<!-- 长城修改：隐藏对话框中的思考时间 -->
+		<!-- {#if $user?.role === 'admin'} -->
+			<Collapsible
+				title={token.summary}
+				open={$settings?.expandDetails ?? false}
+				attributes={token?.attributes}
+				className="w-full space-y-1"
+				dir="auto"
+			>
+				<div class=" mb-1.5" slot="content">
+					<!-- 长城修改：隐藏思考内容 -->
+					{#if $user?.role === 'admin'}
+						<svelte:self
+							id={`${id}-${tokenIdx}-d`}
+							tokens={marked.lexer(token.text)}
+							attributes={token?.attributes}
+							{onTaskClick}
+							{onSourceClick}
+						/>
+					{/if}
+				</div>
+			</Collapsible>
+		<!-- {/if} -->
 	{:else if token.type === 'html'}
 		<HtmlToken {id} {token} {onSourceClick} />
 	{:else if token.type === 'iframe'}

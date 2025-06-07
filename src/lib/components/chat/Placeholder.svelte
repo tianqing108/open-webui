@@ -90,7 +90,7 @@
 	onMount(() => {});
 </script>
 
-<div class="m-auto w-full max-w-6xl px-2 @2xl:px-20 translate-y-6 py-24 text-center">
+<div style="padding: 0; margin-top: 0;" class="m-auto w-full max-w-6xl px-2 @2xl:px-20 translate-y-6 py-24 text-center">
 	{#if $temporaryChatEnabled}
 		<Tooltip
 			content={$i18n.t('This chat won’t appear in history and your messages will not be saved.')}
@@ -107,46 +107,48 @@
 		class="w-full text-3xl text-gray-800 dark:text-gray-100 text-center flex items-center gap-4 font-primary"
 	>
 		<div class="w-full flex flex-col justify-center items-center">
-			<div class="flex flex-row justify-center gap-3 @sm:gap-3.5 w-fit px-5">
-				<div class="flex shrink-0 justify-center">
-					<div class="flex -space-x-4 mb-0.5" in:fade={{ duration: 100 }}>
-						{#each models as model, modelIdx}
-							<Tooltip
-								content={(models[modelIdx]?.info?.meta?.tags ?? [])
-									.map((tag) => tag.name.toUpperCase())
-									.join(', ')}
-								placement="top"
-							>
-								<button
-									on:click={() => {
-										selectedModelIdx = modelIdx;
-									}}
+			<!-- 长城修改：隐藏输入框头部模型标题 -->
+			{#if $user?.role === 'admin'}
+				<div class="flex flex-row justify-center gap-3 @sm:gap-3.5 w-fit px-5">
+					<div class="flex shrink-0 justify-center">
+						<div class="flex -space-x-4 mb-0.5" in:fade={{ duration: 100 }}>
+							{#each models as model, modelIdx}
+								<Tooltip
+									content={(models[modelIdx]?.info?.meta?.tags ?? [])
+										.map((tag) => tag.name.toUpperCase())
+										.join(', ')}
+									placement="top"
 								>
-									<img
-										crossorigin="anonymous"
-										src={model?.info?.meta?.profile_image_url ??
-											($i18n.language === 'dg-DG'
-												? `/doge.png`
-												: `${WEBUI_BASE_URL}/static/favicon.png`)}
-										class=" size-9 @sm:size-10 rounded-full border-[1px] border-gray-100 dark:border-none"
-										alt="logo"
-										draggable="false"
-									/>
-								</button>
-							</Tooltip>
-						{/each}
+									<button
+										on:click={() => {
+											selectedModelIdx = modelIdx;
+										}}
+									>
+										<img
+											crossorigin="anonymous"
+											src={model?.info?.meta?.profile_image_url ??
+												($i18n.language === 'dg-DG'
+													? `/doge.png`
+													: `${WEBUI_BASE_URL}/static/favicon.png`)}
+											class=" size-9 @sm:size-10 rounded-full border-[1px] border-gray-100 dark:border-none"
+											alt="logo"
+											draggable="false"
+										/>
+									</button>
+								</Tooltip>
+							{/each}
+						</div>
+					</div>
+
+					<div class=" text-3xl @sm:text-3xl line-clamp-1" in:fade={{ duration: 100 }}>
+						{#if models[selectedModelIdx]?.name}
+							{models[selectedModelIdx]?.name}
+						{:else}
+							{$i18n.t('Hello, {{name}}', { name: $user?.name })}
+						{/if}
 					</div>
 				</div>
-
-				<div class=" text-3xl @sm:text-3xl line-clamp-1" in:fade={{ duration: 100 }}>
-					{#if models[selectedModelIdx]?.name}
-						{models[selectedModelIdx]?.name}
-					{:else}
-						{$i18n.t('Hello, {{name}}', { name: $user?.name })}
-					{/if}
-				</div>
-			</div>
-
+			{/if}
 			<div class="flex mt-1 mb-2">
 				<div in:fade={{ duration: 100, delay: 50 }}>
 					{#if models[selectedModelIdx]?.info?.meta?.description ?? null}
@@ -186,7 +188,7 @@
 				</div>
 			</div>
 
-			<div class="text-base font-normal @md:max-w-3xl w-full py-3 {atSelectedModel ? 'mt-2' : ''}">
+			<div class="text-base font-normal w-full py-3 {atSelectedModel ? 'mt-2' : ''}">
 				<MessageInput
 					{history}
 					{selectedModels}
@@ -203,7 +205,7 @@
 					{transparentBackground}
 					{stopResponse}
 					{createMessagePair}
-					placeholder={$i18n.t('How can I help you today?')}
+					placeholder={$i18n.t('Send a Message')}
 					onChange={(input) => {
 						if (input.prompt !== null) {
 							localStorage.setItem(`chat-input`, JSON.stringify(input));
@@ -221,18 +223,21 @@
 			</div>
 		</div>
 	</div>
-	<div class="mx-auto max-w-2xl font-primary mt-2" in:fade={{ duration: 200, delay: 200 }}>
-		<div class="mx-5">
-			<Suggestions
-				suggestionPrompts={atSelectedModel?.info?.meta?.suggestion_prompts ??
-					models[selectedModelIdx]?.info?.meta?.suggestion_prompts ??
-					$config?.default_prompt_suggestions ??
-					[]}
-				inputValue={prompt}
-				on:select={(e) => {
-					selectSuggestionPrompt(e.detail);
-				}}
-			/>
+	<!-- 长城修改：隐藏输入框底部的建议模块 -->
+	{#if $user?.role === 'admin'}
+		<div class="mx-auto max-w-2xl font-primary mt-2" in:fade={{ duration: 200, delay: 200 }}>
+			<div class="mx-5">
+				<Suggestions
+					suggestionPrompts={atSelectedModel?.info?.meta?.suggestion_prompts ??
+						models[selectedModelIdx]?.info?.meta?.suggestion_prompts ??
+						$config?.default_prompt_suggestions ??
+						[]}
+					inputValue={prompt}
+					on:select={(e) => {
+						selectSuggestionPrompt(e.detail);
+					}}
+				/>
+			</div>
 		</div>
-	</div>
+	{/if}
 </div>

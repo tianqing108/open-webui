@@ -2,6 +2,7 @@
 	import { decode } from 'html-entities';
 	import { v4 as uuidv4 } from 'uuid';
 
+	import { user } from '$lib/stores';
 	import { getContext } from 'svelte';
 	const i18n = getContext('i18n');
 
@@ -149,14 +150,16 @@
 						{title}
 					{/if}
 				</div>
-
-				<div class="flex self-center translate-y-[1px]">
-					{#if open}
-						<ChevronUp strokeWidth="3.5" className="size-3.5" />
-					{:else}
-						<ChevronDown strokeWidth="3.5" className="size-3.5" />
-					{/if}
-				</div>
+				<!-- 长城修改：隐藏思考箭头 -->
+				{#if $user?.role === 'admin'}
+					<div class="flex self-center translate-y-[1px]">
+						{#if open}
+							<ChevronUp strokeWidth="3.5" className="size-3.5" />
+						{:else}
+							<ChevronDown strokeWidth="3.5" className="size-3.5" />
+						{/if}
+					</div>
+				{/if}
 			</div>
 		</div>
 	{:else}

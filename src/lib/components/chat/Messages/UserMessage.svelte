@@ -295,6 +295,7 @@
 					<div class="w-full">
 						<div class="flex {($settings?.chatBubble ?? true) ? 'justify-end pb-1' : 'w-full'}">
 							<div
+								style="background-color: #E6E9FF;border-radius: 30px 0 30px 30px;min-height: 45px;"
 								class="rounded-3xl {($settings?.chatBubble ?? true)
 									? `max-w-[90%] px-5 py-2  bg-gray-50 dark:bg-gray-850 ${
 											message.files ? 'rounded-tr-lg' : ''
@@ -306,7 +307,8 @@
 								{/if}
 							</div>
 						</div>
-
+						<!-- 长城修改：隐藏对话框中的编辑、复制等功能 -->
+						{#if $_user?.role === 'admin'}
 						<div
 							class=" flex {($settings?.chatBubble ?? true)
 								? 'justify-end'
@@ -581,6 +583,7 @@
 								{/if}
 							{/if}
 						</div>
+						{/if}
 					</div>
 				{/if}
 			{/if}

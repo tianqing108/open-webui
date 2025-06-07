@@ -458,33 +458,35 @@
 			: 'invisible'}"
 	>
 		<div class="px-1.5 flex justify-between space-x-1 text-gray-600 dark:text-gray-400">
-			<button
-				class=" cursor-pointer p-[7px] flex rounded-xl hover:bg-gray-100 dark:hover:bg-gray-900 transition"
-				on:click={() => {
-					showSidebar.set(!$showSidebar);
-				}}
-			>
-				<div class=" m-auto self-center">
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke-width="2"
-						stroke="currentColor"
-						class="size-5"
-					>
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12"
-						/>
-					</svg>
-				</div>
-			</button>
-
+			<!-- 长城修改：隐藏左侧栏收起功能 -->
+			{#if $user?.role === 'admin'}
+				<button
+					class=" cursor-pointer p-[7px] flex rounded-xl hover:bg-gray-100 dark:hover:bg-gray-900 transition"
+					on:click={() => {
+						showSidebar.set(!$showSidebar);
+					}}
+				>
+					<div class=" m-auto self-center">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke-width="2"
+							stroke="currentColor"
+							class="size-5"
+						>
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12"
+							/>
+						</svg>
+					</div>
+				</button>
+			{/if}
 			<a
 				id="sidebar-new-chat-button"
-				class="flex justify-between items-center flex-1 rounded-lg px-2 py-1 h-full text-right hover:bg-gray-100 dark:hover:bg-gray-900 transition no-drag-region"
+				class="flex justify-between items-center flex-1 rounded-lg px-2 py-1 h-full text-right dark:hover:bg-gray-900 transition no-drag-region"
 				href="/"
 				draggable="false"
 				on:click={async () => {
@@ -499,7 +501,7 @@
 					}, 0);
 				}}
 			>
-				<div class="flex items-center">
+				<!-- <div class="flex items-center">
 					<div class="self-center mx-1.5">
 						<img
 							crossorigin="anonymous"
@@ -515,6 +517,9 @@
 
 				<div>
 					<PencilSquare className=" size-5" strokeWidth="2" />
+				</div> -->
+				<div class="flex items-center new-chat-button justify-center">
+					<span style="font-size: 21px;margin: -3px 3px 0 0;">+</span>{$i18n.t('New Chat')}
 				</div>
 			</a>
 		</div>
@@ -682,10 +687,7 @@
 
 			<Folder
 				className="px-2 mt-0.5"
-				name={$i18n.t('Chats')}
-				onAdd={() => {
-					createFolder();
-				}}
+				name={$i18n.t('History Chats')}
 				onAddLabel={$i18n.t('New Folder')}
 				on:import={(e) => {
 					importChatHandler(e.detail);
@@ -836,35 +838,20 @@
 					<div class="pt-1.5">
 						{#if $chats}
 							{#each $chats as chat, idx}
-								{#if idx === 0 || (idx > 0 && chat.time_range !== $chats[idx - 1].time_range)}
-									<div
-										class="w-full pl-2.5 text-xs text-gray-500 dark:text-gray-500 font-medium {idx ===
-										0
-											? ''
-											: 'pt-5'} pb-1.5"
-									>
-										{$i18n.t(chat.time_range)}
-										<!-- localisation keys for time_range to be recognized from the i18next parser (so they don't get automatically removed):
-							{$i18n.t('Today')}
-							{$i18n.t('Yesterday')}
-							{$i18n.t('Previous 7 days')}
-							{$i18n.t('Previous 30 days')}
-							{$i18n.t('January')}
-							{$i18n.t('February')}
-							{$i18n.t('March')}
-							{$i18n.t('April')}
-							{$i18n.t('May')}
-							{$i18n.t('June')}
-							{$i18n.t('July')}
-							{$i18n.t('August')}
-							{$i18n.t('September')}
-							{$i18n.t('October')}
-							{$i18n.t('November')}
-							{$i18n.t('December')}
-							-->
-									</div>
+								<!-- 长城修改：隐藏历史对话中的时间今天、昨天、一周... -->
+								{#if $user?.role === 'admin'}
+									{#if idx === 0 || (idx > 0 && chat.time_range !== $chats[idx - 1].time_range)}
+										<div
+											style="color: #3D3D3D;"
+											class="w-full pl-2.5 text-xs text-gray-500 dark:text-gray-500 font-medium {idx ===
+											0
+												? ''
+												: 'pt-5'} pb-1.5"
+										>
+											{$i18n.t(chat.time_range)}
+										</div>
+									{/if}
 								{/if}
-
 								<ChatItem
 									className=""
 									id={chat.id}

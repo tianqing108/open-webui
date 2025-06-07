@@ -549,7 +549,7 @@
 			<div
 				class="{($settings?.widescreenMode ?? null)
 					? 'max-w-full'
-					: 'max-w-6xl'} px-2.5 mx-auto inset-x-0"
+					: 'max-w-6xl'} px-5 mx-auto inset-x-0"
 			>
 				<div class="">
 					<input
@@ -601,9 +601,18 @@
 								dispatch('submit', prompt);
 							}}
 						>
+							<!-- svelte-ignore a11y-click-events-have-key-events -->
+							<!-- svelte-ignore a11y-no-static-element-interactions -->
 							<div
+								style="border-radius: 12px;
+								border: 2px solid transparent;
+								background: linear-gradient(white, white) padding-box, linear-gradient(to right, #7C8DFF, #F4B8FF) border-box;"
 								class="flex-1 flex flex-col relative w-full shadow-lg rounded-3xl border border-gray-50 dark:border-gray-850 hover:border-gray-100 focus-within:border-gray-100 hover:dark:border-gray-800 focus-within:dark:border-gray-800 transition px-1 bg-white/90 dark:bg-gray-400/5 dark:text-gray-100"
 								dir={$settings?.chatDirection ?? 'auto'}
+								on:click={() => {
+									const chatInputElement = document.getElementById('chat-input');
+									chatInputElement?.focus();
+								}}
 							>
 								{#if files.length > 0}
 									<div class="mx-2 mt-2.5 -mb-1 flex items-center flex-wrap gap-2">
@@ -698,7 +707,7 @@
 									</div>
 								{/if}
 
-								<div class="px-2.5">
+								<div class="px-2.5" style="height: 100px;overflow-y: auto;">
 									{#if $settings?.richTextInput ?? true}
 										<div
 											class="scrollbar-hidden rtl:text-right ltr:text-left bg-transparent dark:text-gray-100 outline-hidden w-full pt-2.5 pb-[5px] px-1 resize-none h-fit max-h-80 overflow-auto"
@@ -1531,22 +1540,11 @@
 														id="send-message-button"
 														class="{!(prompt === '' && files.length === 0)
 															? 'bg-black text-white hover:bg-gray-900 dark:bg-white dark:text-black dark:hover:bg-gray-100 '
-															: 'text-white bg-gray-200 dark:text-gray-900 dark:bg-gray-700 disabled'} transition rounded-full p-1.5 self-center"
+															: 'text-white bg-gray-200 dark:text-gray-900 dark:bg-gray-700 disabled'} transition p-1.5 self-center submit-button"
 														type="submit"
 														disabled={prompt === '' && files.length === 0}
 													>
-														<svg
-															xmlns="http://www.w3.org/2000/svg"
-															viewBox="0 0 16 16"
-															fill="currentColor"
-															class="size-5"
-														>
-															<path
-																fill-rule="evenodd"
-																d="M8 14a.75.75 0 0 1-.75-.75V4.56L4.03 7.78a.75.75 0 0 1-1.06-1.06l4.5-4.5a.75.75 0 0 1 1.06 0l4.5 4.5a.75.75 0 0 1-1.06 1.06L8.75 4.56v8.69A.75.75 0 0 1 8 14Z"
-																clip-rule="evenodd"
-															/>
-														</svg>
+														提问
 													</button>
 												</Tooltip>
 											</div>
