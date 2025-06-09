@@ -90,7 +90,7 @@
 	onMount(() => {});
 </script>
 
-<div style="padding: 0; margin-top: 0;" class="m-auto w-full max-w-6xl px-2 @2xl:px-20 translate-y-6 py-24 text-center">
+<div style="padding: 0; {$user?.role === 'admin' ? '' : 'margin-bottom: 0;'}" class="m-auto w-full px-2 @2xl:px-20 py-24 text-center">
 	{#if $temporaryChatEnabled}
 		<Tooltip
 			content={$i18n.t('This chat won’t appear in history and your messages will not be saved.')}
@@ -188,7 +188,7 @@
 				</div>
 			</div>
 
-			<div class="text-base font-normal w-full py-3 {atSelectedModel ? 'mt-2' : ''}">
+			<div style="padding-bottom: 1rem" class="text-base font-normal w-full py-3 {atSelectedModel ? 'mt-2' : ''}">
 				<MessageInput
 					{history}
 					{selectedModels}

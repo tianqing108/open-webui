@@ -549,7 +549,7 @@
 			<div
 				class="{($settings?.widescreenMode ?? null)
 					? 'max-w-full'
-					: 'max-w-6xl'} px-5 mx-auto inset-x-0"
+					: ''} px-5 mx-auto inset-x-0"
 			>
 				<div class="">
 					<input

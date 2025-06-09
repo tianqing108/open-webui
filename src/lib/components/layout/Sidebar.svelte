@@ -501,26 +501,29 @@
 					}, 0);
 				}}
 			>
-				<!-- <div class="flex items-center">
-					<div class="self-center mx-1.5">
-						<img
-							crossorigin="anonymous"
-							src="{WEBUI_BASE_URL}/static/favicon.png"
-							class=" size-5 -translate-x-1.5 rounded-full"
-							alt="logo"
-						/>
+				{#if $user?.role === 'admin'}
+					<div class="flex items-center">
+						<div class="self-center mx-1.5">
+							<img
+								crossorigin="anonymous"
+								src="{WEBUI_BASE_URL}/static/favicon.png"
+								class=" size-5 -translate-x-1.5 rounded-full"
+								alt="logo"
+							/>
+						</div>
+						<div class=" self-center font-medium text-sm text-gray-850 dark:text-white font-primary">
+							{$i18n.t('New Chat')}
+						</div>
 					</div>
-					<div class=" self-center font-medium text-sm text-gray-850 dark:text-white font-primary">
-						{$i18n.t('New Chat')}
-					</div>
-				</div>
 
-				<div>
-					<PencilSquare className=" size-5" strokeWidth="2" />
-				</div> -->
-				<div class="flex items-center new-chat-button justify-center">
-					<span style="font-size: 21px;margin: -3px 3px 0 0;">+</span>{$i18n.t('New Chat')}
-				</div>
+					<div>
+						<PencilSquare className=" size-5" strokeWidth="2" />
+					</div>
+				{:else}
+					<div class="flex items-center new-chat-button justify-center">
+						<span style="font-size: 21px;margin: -3px 3px 0 0;">+</span>{$i18n.t('New Chat')}
+					</div>
+				{/if}
 			</a>
 		</div>
 
