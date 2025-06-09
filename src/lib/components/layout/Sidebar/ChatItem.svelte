@@ -378,7 +378,7 @@
 		>
 			<div class=" flex self-center flex-1 w-full">
 				<!-- 长城修改：左侧标题图标 -->
-				<img style="width: 18px;height: 18px;" src="/static/favicon.png" alt="">
+				<img style="width: 18px;height: 18px;margin-right: 3px" src="/static/chatImg.png" alt="">
 				<div dir="auto" class="text-left self-center overflow-hidden w-full h-[20px]">
 					{title}
 				</div>

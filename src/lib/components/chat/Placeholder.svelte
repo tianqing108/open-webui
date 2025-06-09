@@ -188,7 +188,7 @@
 				</div>
 			</div>
 
-			<div style="padding-bottom: 1rem" class="text-base font-normal w-full py-3 {atSelectedModel ? 'mt-2' : ''}">
+			<div class="text-base font-normal w-full py-3 {atSelectedModel ? 'mt-2' : ''} pb-[1rem]">
 				<MessageInput
 					{history}
 					{selectedModels}
