@@ -50,7 +50,8 @@
 		removeDetails,
 		getPromptVariables,
 		processDetails,
-		removeAllDetails
+		removeAllDetails,
+		getUrlParam
 	} from '$lib/utils';
 
 	import { generateChatCompletion } from '$lib/apis/ollama';
@@ -274,7 +275,6 @@
 	};
 
 	const chatEventHandler = async (event, cb) => {
-		console.log(event);
 
 		if (event.chat_id === $chatId) {
 			await tick();
@@ -376,8 +376,6 @@
 					eventConfirmationMessage = data.message;
 					eventConfirmationInputPlaceholder = data.placeholder;
 					eventConfirmationInputValue = data?.value ?? '';
-				} else {
-					console.log('Unknown message type', data);
 				}
 
 				history.messages[event.message_id] = message;
@@ -498,6 +496,13 @@
 		chatInput?.focus();
 
 		chats.subscribe(() => {});
+		// 长城修改：兼容协同学院首页AI提问，主动发起提问
+		let { question } = getUrlParam();
+		setTimeout(() => {
+			if (question && selectedModels && selectedModels.length > 0 && selectedModels[0] !==  '' ) {
+				submitPrompt(question);
+			}
+		}, 1300);
 	});
 
 	onDestroy(() => {
@@ -1301,8 +1306,6 @@
 				createMessagesList(history, message.id)
 			);
 		}
-
-		console.log(data);
 		if (autoScroll) {
 			scrollToBottom();
 		}

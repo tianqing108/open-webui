@@ -1404,6 +1404,5 @@ export const getUrlParam = () => {
 			paramsObject[key] = value;
 		}
 	}
-	console.log(paramsObject);
 	return paramsObject;
 }

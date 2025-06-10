@@ -1,5 +1,5 @@
 import { WEBUI_API_BASE_URL } from '$lib/constants';
-import { getTimeRange } from '$lib/utils';
+import { getTimeRange, getUrlParam } from '$lib/utils';
 
 export const createNewChat = async (token: string, chat: object) => {
 	let error = null;
@@ -93,7 +93,10 @@ export const getChatList = async (token: string = '', page: number | null = null
 			return res.json();
 		})
 		.then((json) => {
-			return json;
+			// 长城修改：隔离不同模型的历史数据
+			let model = JSON.parse(sessionStorage.selectedModels)[0];
+			const newJson = json.filter(item => item.model === model);
+			return newJson;
 		})
 		.catch((err) => {
 			error = err;
