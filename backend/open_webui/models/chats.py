@@ -9,7 +9,7 @@ from open_webui.models.tags import TagModel, Tag, Tags
 from open_webui.env import SRC_LOG_LEVELS
 
 from pydantic import BaseModel, ConfigDict
-from sqlalchemy import BigInteger, Boolean, Column, String, Text, JSON
+from sqlalchemy import BigInteger, Boolean, Column, String, Text, JSON, cast
 from sqlalchemy import or_, func, select, and_, text
 from sqlalchemy.sql import exists
 
@@ -102,6 +102,7 @@ class ChatTitleIdResponse(BaseModel):
     title: str
     updated_at: int
     created_at: int
+    model: str
 
 
 class ChatTable:
@@ -466,8 +467,16 @@ class ChatTable:
             if not include_archived:
                 query = query.filter_by(archived=False)
 
+            def get_first_model_expr():
+                engine = db.get_bind()
+                
+                if engine.dialect.name == 'postgresql':
+                    return cast(Chat.chat['models'][0], String)
+                else:
+                    return cast(func.json_extract(Chat.chat, '$.models[0]'), String)
+
             query = query.order_by(Chat.updated_at.desc()).with_entities(
-                Chat.id, Chat.title, Chat.updated_at, Chat.created_at
+                Chat.id, Chat.title, Chat.updated_at, Chat.created_at, get_first_model_expr().label('first_model')
             )
 
             if skip:
@@ -485,6 +494,7 @@ class ChatTable:
                         "title": chat[1],
                         "updated_at": chat[2],
                         "created_at": chat[3],
+                        "model": chat[4]
                     }
                 )
                 for chat in all_chats
