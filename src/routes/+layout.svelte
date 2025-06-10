@@ -316,7 +316,6 @@
 				console.log('execute:tool', data);
 				executeTool(data, cb);
 			} else if (type === 'request:chat:completion') {
-				console.log(data, $socket.id);
 				const { session_id, channel, form_data, model } = data;
 
 				try {
@@ -372,7 +371,6 @@
 											const lines = chunk.split('\n').filter((line) => line.trim() !== '');
 
 											for (const line of lines) {
-												console.log(line);
 												$socket?.emit(channel, line);
 											}
 										}
