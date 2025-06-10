@@ -471,9 +471,9 @@ class ChatTable:
                 engine = db.get_bind()
                 
                 if engine.dialect.name == 'postgresql':
-                    return cast(Chat.chat['models'][0], String)
+                    return Chat.chat['models'][0]
                 else:
-                    return cast(func.json_extract(Chat.chat, '$.models[0]'), String)
+                    return func.json_extract(Chat.chat, '$.models[0]')
 
             query = query.order_by(Chat.updated_at.desc()).with_entities(
                 Chat.id, Chat.title, Chat.updated_at, Chat.created_at, get_first_model_expr().label('first_model')
