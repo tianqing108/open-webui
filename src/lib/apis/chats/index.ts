@@ -94,8 +94,13 @@ export const getChatList = async (token: string = '', page: number | null = null
 		})
 		.then((json) => {
 			// 长城修改：隔离不同模型的历史数据
-			let model = JSON.parse(sessionStorage.selectedModels)[0];
-			const newJson = json.filter(item => item.model === model);
+			const sessionModel = sessionStorage.model;
+			const { model } = getUrlParam()
+			if (model) {
+				sessionStorage.model = model
+			}
+			const  modelId = model || sessionModel
+			const newJson = json.filter(item => item.model === modelId);
 			return newJson;
 		})
 		.catch((err) => {
