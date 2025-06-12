@@ -238,21 +238,24 @@
 			align="start"
 			transition={flyAndScale}
 		>
-			<DropdownMenu.Item
-				class="flex gap-2 items-center px-3 py-1.5 text-sm  cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md"
-				on:click={() => {
-					pinHandler();
-				}}
-			>
-				{#if pinned}
-					<BookmarkSlash strokeWidth="2" />
-					<div class="flex items-center">{$i18n.t('Unpin')}</div>
-				{:else}
-					<Bookmark strokeWidth="2" />
-					<div class="flex items-center">{$i18n.t('Pin')}</div>
-				{/if}
-			</DropdownMenu.Item>
-
+			
+			<!-- 长城修改：隐藏历史对话中的更多，置顶、重命名、复制等 -->
+			{#if $user?.role === 'admin'}
+				<DropdownMenu.Item
+					class="flex gap-2 items-center px-3 py-1.5 text-sm  cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md"
+					on:click={() => {
+						pinHandler();
+					}}
+				>
+					{#if pinned}
+						<BookmarkSlash strokeWidth="2" />
+						<div class="flex items-center">{$i18n.t('Unpin')}</div>
+					{:else}
+						<Bookmark strokeWidth="2" />
+						<div class="flex items-center">{$i18n.t('Pin')}</div>
+					{/if}
+				</DropdownMenu.Item>
+			{/if}
 			<DropdownMenu.Item
 				class="flex gap-2 items-center px-3 py-1.5 text-sm  cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md"
 				on:click={() => {
@@ -262,82 +265,85 @@
 				<Pencil strokeWidth="2" />
 				<div class="flex items-center">{$i18n.t('Rename')}</div>
 			</DropdownMenu.Item>
-
-			<DropdownMenu.Item
-				class="flex gap-2 items-center px-3 py-1.5 text-sm  cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md"
-				on:click={() => {
-					cloneChatHandler();
-				}}
-			>
-				<DocumentDuplicate strokeWidth="2" />
-				<div class="flex items-center">{$i18n.t('Clone')}</div>
-			</DropdownMenu.Item>
-
-			<DropdownMenu.Item
-				class="flex gap-2 items-center px-3 py-1.5 text-sm  cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md"
-				on:click={() => {
-					archiveChatHandler();
-				}}
-			>
-				<ArchiveBox strokeWidth="2" />
-				<div class="flex items-center">{$i18n.t('Archive')}</div>
-			</DropdownMenu.Item>
-
-			{#if $user?.role === 'admin' || ($user.permissions?.chat?.share ?? true)}
+			
+			<!-- 长城修改：隐藏历史对话中的更多，置顶、重命名、复制等 -->
+			{#if $user?.role === 'admin'}
 				<DropdownMenu.Item
-					class="flex gap-2 items-center px-3 py-1.5 text-sm  cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800  rounded-md"
+					class="flex gap-2 items-center px-3 py-1.5 text-sm  cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md"
 					on:click={() => {
-						shareHandler();
+						cloneChatHandler();
 					}}
 				>
-					<Share />
-					<div class="flex items-center">{$i18n.t('Share')}</div>
+					<DocumentDuplicate strokeWidth="2" />
+					<div class="flex items-center">{$i18n.t('Clone')}</div>
 				</DropdownMenu.Item>
-			{/if}
 
-			<DropdownMenu.Sub>
-				<DropdownMenu.SubTrigger
-					class="flex gap-2 items-center px-3 py-2 text-sm  cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md"
+				<DropdownMenu.Item
+					class="flex gap-2 items-center px-3 py-1.5 text-sm  cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md"
+					on:click={() => {
+						archiveChatHandler();
+					}}
 				>
-					<Download strokeWidth="2" />
+					<ArchiveBox strokeWidth="2" />
+					<div class="flex items-center">{$i18n.t('Archive')}</div>
+				</DropdownMenu.Item>
 
-					<div class="flex items-center">{$i18n.t('Download')}</div>
-				</DropdownMenu.SubTrigger>
-				<DropdownMenu.SubContent
-					class="w-full rounded-xl px-1 py-1.5 z-50 bg-white dark:bg-gray-850 dark:text-white shadow-lg"
-					transition={flyAndScale}
-					sideOffset={8}
-				>
-					{#if $user?.role === 'admin' || ($user.permissions?.chat?.export ?? true)}
+				{#if $user?.role === 'admin' || ($user.permissions?.chat?.share ?? true)}
+					<DropdownMenu.Item
+						class="flex gap-2 items-center px-3 py-1.5 text-sm  cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800  rounded-md"
+						on:click={() => {
+							shareHandler();
+						}}
+					>
+						<Share />
+						<div class="flex items-center">{$i18n.t('Share')}</div>
+					</DropdownMenu.Item>
+				{/if}
+
+				<DropdownMenu.Sub>
+					<DropdownMenu.SubTrigger
+						class="flex gap-2 items-center px-3 py-2 text-sm  cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md"
+					>
+						<Download strokeWidth="2" />
+
+						<div class="flex items-center">{$i18n.t('Download')}</div>
+					</DropdownMenu.SubTrigger>
+					<DropdownMenu.SubContent
+						class="w-full rounded-xl px-1 py-1.5 z-50 bg-white dark:bg-gray-850 dark:text-white shadow-lg"
+						transition={flyAndScale}
+						sideOffset={8}
+					>
+						{#if $user?.role === 'admin' || ($user.permissions?.chat?.export ?? true)}
+							<DropdownMenu.Item
+								class="flex gap-2 items-center px-3 py-2 text-sm  cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md"
+								on:click={() => {
+									downloadJSONExport();
+								}}
+							>
+								<div class="flex items-center line-clamp-1">{$i18n.t('Export chat (.json)')}</div>
+							</DropdownMenu.Item>
+						{/if}
+
 						<DropdownMenu.Item
 							class="flex gap-2 items-center px-3 py-2 text-sm  cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md"
 							on:click={() => {
-								downloadJSONExport();
+								downloadTxt();
 							}}
 						>
-							<div class="flex items-center line-clamp-1">{$i18n.t('Export chat (.json)')}</div>
+							<div class="flex items-center line-clamp-1">{$i18n.t('Plain text (.txt)')}</div>
 						</DropdownMenu.Item>
-					{/if}
 
-					<DropdownMenu.Item
-						class="flex gap-2 items-center px-3 py-2 text-sm  cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md"
-						on:click={() => {
-							downloadTxt();
-						}}
-					>
-						<div class="flex items-center line-clamp-1">{$i18n.t('Plain text (.txt)')}</div>
-					</DropdownMenu.Item>
-
-					<DropdownMenu.Item
-						class="flex gap-2 items-center px-3 py-2 text-sm  cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md"
-						on:click={() => {
-							downloadPdf();
-						}}
-					>
-						<div class="flex items-center line-clamp-1">{$i18n.t('PDF document (.pdf)')}</div>
-					</DropdownMenu.Item>
-				</DropdownMenu.SubContent>
-			</DropdownMenu.Sub>
+						<DropdownMenu.Item
+							class="flex gap-2 items-center px-3 py-2 text-sm  cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md"
+							on:click={() => {
+								downloadPdf();
+							}}
+						>
+							<div class="flex items-center line-clamp-1">{$i18n.t('PDF document (.pdf)')}</div>
+						</DropdownMenu.Item>
+					</DropdownMenu.SubContent>
+				</DropdownMenu.Sub>
+			{/if}
 			<DropdownMenu.Item
 				class="flex  gap-2  items-center px-3 py-1.5 text-sm  cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md"
 				on:click={() => {
@@ -347,34 +353,34 @@
 				<GarbageBin strokeWidth="2" />
 				<div class="flex items-center">{$i18n.t('Delete')}</div>
 			</DropdownMenu.Item>
+			{#if $user?.role === 'admin'}
+				<hr class="border-gray-100 dark:border-gray-850 my-0.5" />
+				<div class="flex p-1">
+					<Tags
+						{chatId}
+						on:add={(e) => {
+							dispatch('tag', {
+								type: 'add',
+								name: e.detail.name
+							});
 
-			<hr class="border-gray-100 dark:border-gray-850 my-0.5" />
+							show = false;
+						}}
+						on:delete={(e) => {
+							dispatch('tag', {
+								type: 'delete',
+								name: e.detail.name
+							});
 
-			<div class="flex p-1">
-				<Tags
-					{chatId}
-					on:add={(e) => {
-						dispatch('tag', {
-							type: 'add',
-							name: e.detail.name
-						});
-
-						show = false;
-					}}
-					on:delete={(e) => {
-						dispatch('tag', {
-							type: 'delete',
-							name: e.detail.name
-						});
-
-						show = false;
-					}}
-					on:close={() => {
-						show = false;
-						onClose();
-					}}
-				/>
-			</div>
+							show = false;
+						}}
+						on:close={() => {
+							show = false;
+							onClose();
+						}}
+					/>
+				</div>
+			{/if}
 		</DropdownMenu.Content>
 	</div>
 </Dropdown>

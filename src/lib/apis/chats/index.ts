@@ -1,5 +1,7 @@
 import { WEBUI_API_BASE_URL } from '$lib/constants';
 import { getTimeRange, getUrlParam } from '$lib/utils';
+import { get } from 'svelte/store';
+import { user } from '$lib/stores';
 
 export const createNewChat = async (token: string, chat: object) => {
 	let error = null;
@@ -94,14 +96,18 @@ export const getChatList = async (token: string = '', page: number | null = null
 		})
 		.then((json) => {
 			// 长城修改：隔离不同模型的历史数据
-			const sessionModel = sessionStorage.model;
-			const { model } = getUrlParam()
-			if (model) {
-				sessionStorage.model = model
+			const role = get(user).role;
+			if (role !== 'admin') {
+				const sessionModel = sessionStorage.model;
+				const { model } = getUrlParam()
+				if (model) {
+					sessionStorage.model = model
+				}
+				const  modelId = model || sessionModel
+				const newJson = json.filter(item => item.model === modelId);
+				return newJson;
 			}
-			const  modelId = model || sessionModel
-			const newJson = json.filter(item => item.model === modelId);
-			return newJson;
+			return json;
 		})
 		.catch((err) => {
 			error = err;
