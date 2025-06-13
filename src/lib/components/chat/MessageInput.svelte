@@ -1569,5 +1569,11 @@
 				</div>
 			</div>
 		</div>
+		<!-- 长城修改：普通用户增加备注 -->
+		{#if $_user?.role !== 'admin'}
+			<div style="font-size: 14px;color: #AAAAAA;text-align: center;">
+				内容由AI大模型生成，仅供参考，若需用于商务场景，请人工核实
+			</div>
+		{/if}
 	</div>
 {/if}

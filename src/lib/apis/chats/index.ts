@@ -97,9 +97,9 @@ export const getChatList = async (token: string = '', page: number | null = null
 		.then((json) => {
 			// 长城修改：隔离不同模型的历史数据
 			const role = get(user).role;
-			if (role !== 'admin') {
-				const sessionModel = sessionStorage.model;
-				const { model } = getUrlParam()
+			const sessionModel = sessionStorage.model;
+			const { model } = getUrlParam()
+			if (role !== 'admin' && (model || sessionModel)) {
 				if (model) {
 					sessionStorage.model = model
 				}
