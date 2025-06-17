@@ -103,7 +103,7 @@
 			return;
 		}
 		const sessionUser = await getSessionUser(token).catch((error) => {
-			toast.error(`${error}`);
+			// toast.error(`${error}`);
 			return null;
 		});
 		if (!sessionUser) {

@@ -336,8 +336,13 @@
 				showSidebar.set(true);
 			}
 		});
-
-		showSidebar.set(!$mobile ? localStorage.sidebar === 'true' : false);
+		// 长城修改：普通用户侧边栏默认打开
+		if ($user?.role === 'admin') {
+			showSidebar.set(!$mobile ? localStorage.sidebar === 'true' : false);
+		} else {
+			showSidebar.set(!$mobile ? true : false);
+		}
+		
 		showSidebar.subscribe((value) => {
 			localStorage.sidebar = value;
 
